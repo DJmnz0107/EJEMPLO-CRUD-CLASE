@@ -109,6 +109,13 @@ class MainActivity : AppCompatActivity() {
 
                 limpiarCampos()
 
+                val nuevasCanciones = mostrarDatos()
+                withContext(Dispatchers.Main) {
+                    //Actualizo al adaptador con los datos nuevos
+
+                    (rcvMusica.adapter as? Adaptador)?.actualizarListado(nuevasCanciones)
+                }
+
 
 
 
