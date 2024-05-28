@@ -107,14 +107,14 @@ class MainActivity : AppCompatActivity() {
                 addMusica.setString(3, txtAutor.text.toString())
                 addMusica.executeUpdate()
 
-                limpiarCampos()
-
                 val nuevasCanciones = mostrarDatos()
                 withContext(Dispatchers.Main) {
                     //Actualizo al adaptador con los datos nuevos
 
                     (rcvMusica.adapter as? Adaptador)?.actualizarListado(nuevasCanciones)
+                    limpiarCampos()
                 }
+
 
 
 

@@ -1,5 +1,6 @@
 package RecyclerViewHelpers
 
+import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -77,7 +78,41 @@ class Adaptador(var Datos: List<dataClassMusica>): RecyclerView.Adapter<ViewHold
 
         //TODO: clic al icono de borrar
 
-        
+        holder.imgBorrar.setOnClickListener {
+
+            //Creo la alerta para confirmar el borrado, la eliminación
+
+            //1- Invoco el contexto
+
+            val context = holder.itemView.context
+
+            //2-Creo la alerta usando los 3 pasos: titulo, mensaje y botones
+
+            val builder = AlertDialog.Builder(context)
+
+            builder.setTitle("Confirmación")
+
+            builder.setMessage("¿Estás seguro que deseas borrar?")
+
+            builder.setPositiveButton("Si"){
+                dialog, wich ->
+
+                eliminarDatos(item.nombreCancion, position)
+            }
+
+            builder.setNegativeButton("No") {
+                dialog, wich ->
+
+                dialog.dismiss()
+            }
+
+            val dialog = builder.create()
+
+            dialog.show()
+
+
+
+        }
 
     }
 
