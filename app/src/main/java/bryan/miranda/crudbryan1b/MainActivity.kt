@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import modelo.ClaseConexion
 import modelo.dataClassMusica
+import java.util.UUID
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,8 +59,11 @@ class MainActivity : AppCompatActivity() {
 
             while (resultSet.next()) {
                 val nombre = resultSet.getString("nombreCancion")
+                val duracion = resultSet.getInt("duracion")
+                val autor = resultSet.getString("autor")
+                val uuid = resultSet.getString("uuid")
 
-                val cancion = dataClassMusica(nombre)
+                val cancion = dataClassMusica(uuid, nombre, duracion, autor)
 
                 canciones.add(cancion)
             }
@@ -100,11 +104,12 @@ class MainActivity : AppCompatActivity() {
                 val objConexion = ClaseConexion().cadenaConexion()
 
                 //2- Crear una variable que contenga un PrepareStatement
-                val addMusica = objConexion?.prepareStatement("insert into tbMusica values(?, ?, ?)")!!
+                val addMusica = objConexion?.prepareStatement("insert into tbMusica(nombreCancion, duracion, autor, uuid) values(?, ?, ?, ?)")!!
 
                 addMusica.setString(1, txtNombre.text.toString())
                 addMusica.setInt(2, txtDuracion.text.toString().toInt())
                 addMusica.setString(3, txtAutor.text.toString())
+                addMusica.setString(4, UUID.randomUUID().toString())
                 addMusica.executeUpdate()
 
                 val nuevasCanciones = mostrarDatos()

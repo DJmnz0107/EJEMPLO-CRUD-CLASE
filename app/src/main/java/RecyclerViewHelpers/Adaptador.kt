@@ -3,6 +3,7 @@ package RecyclerViewHelpers
 import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.recyclerview.widget.RecyclerView
 import bryan.miranda.crudbryan1b.R
 import kotlinx.coroutines.Dispatchers
@@ -10,6 +11,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import modelo.ClaseConexion
 import modelo.dataClassMusica
+import java.util.UUID
 
 class Adaptador(var Datos: List<dataClassMusica>): RecyclerView.Adapter<ViewHolder>() {
 
@@ -113,6 +115,62 @@ class Adaptador(var Datos: List<dataClassMusica>): RecyclerView.Adapter<ViewHold
 
 
         }
+
+        //TODO: clic al icono de editar
+
+        holder.imgEditar.setOnClickListener {
+
+            val context = holder.itemView.context
+
+            val builder = AlertDialog.Builder(context)
+
+            builder.setTitle("Actualizar")
+
+            val cuadroTexto = EditText(context)
+
+            cuadroTexto.setHint(item.nombreCancion)
+
+            builder.setView(cuadroTexto)
+
+            //Botones
+
+            builder.setPositiveButton("Actualizar") {
+                dialog, wich ->
+                actualizarDatos(cuadroTexto.text.toString(), item.uuid)
+            }
+
+            builder.setNegativeButton("Cancelar") {
+                dialog, wich ->
+                dialog.dismiss()
+            }
+
+            val dialog = builder.create()
+
+            dialog.show()
+        }
+
+
+
+
+
+    }
+    fun actualizarDatos(nuevoNombre:String, uuid: String){
+
+        GlobalScope.launch(Dispatchers.IO) {
+
+            val objConexion = ClaseConexion().cadenaConexion()
+
+            val updateCancion = objConexion?.prepareStatement("UPDATE tbMusica set nombreCancion = ? where uuid = ?")!!
+
+            updateCancion.setString(1, nuevoNombre)
+            updateCancion.setString(2, uuid)
+
+            updateCancion.executeUpdate()
+
+            val commit = objConexion.prepareStatement("commit")
+            commit.executeUpdate()
+        }
+
 
     }
 

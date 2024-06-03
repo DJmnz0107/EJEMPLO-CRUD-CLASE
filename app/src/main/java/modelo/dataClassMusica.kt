@@ -1,6 +1,11 @@
 package modelo
 
+import java.util.UUID
+
 data class dataClassMusica(
-    val nombreCancion:String
+    val uuid: String,
+    val nombreCancion:String,
+    val duracion:Int,
+    var autor:String
 
 )

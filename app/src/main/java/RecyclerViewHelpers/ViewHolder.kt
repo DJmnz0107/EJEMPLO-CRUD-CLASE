@@ -11,4 +11,6 @@ class ViewHolder(view:View):RecyclerView.ViewHolder(view) {
     val txtCancion: TextView = view.findViewById(R.id.txtCancion)
 
     val imgBorrar: ImageView = view.findViewById(R.id.imgEliminar)
+
+    val imgEditar: ImageView = view.findViewById(R.id.imgEditar)
 }
