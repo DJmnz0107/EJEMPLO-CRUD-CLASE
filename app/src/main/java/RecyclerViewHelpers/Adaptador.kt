@@ -1,14 +1,17 @@
 package RecyclerViewHelpers
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.recyclerview.widget.RecyclerView
 import bryan.miranda.crudbryan1b.R
+import bryan.miranda.crudbryan1b.detalle_canciones
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import modelo.ClaseConexion
 import modelo.dataClassMusica
 import java.util.UUID
@@ -17,9 +20,17 @@ class Adaptador(var Datos: List<dataClassMusica>): RecyclerView.Adapter<ViewHold
 
     //Funcion para que cuando agregue datos se actualice la lista automáticamente
 
+
     fun actualizarListado(nuevaLista:List<dataClassMusica>){
         Datos = nuevaLista
         notifyDataSetChanged()
+    }
+
+    fun actualizarListaPostEdicion(uuid: String, nuevoNombre: String) {
+        val index = Datos.indexOfFirst { it.uuid == uuid }
+        Datos[index].nombreCancion = nuevoNombre
+        notifyDataSetChanged()
+        notifyItemRemoved(index)
     }
 
 
@@ -142,11 +153,30 @@ class Adaptador(var Datos: List<dataClassMusica>): RecyclerView.Adapter<ViewHold
             builder.setNegativeButton("Cancelar") {
                 dialog, wich ->
                 dialog.dismiss()
+
             }
 
             val dialog = builder.create()
 
             dialog.show()
+        }
+
+        //Cuando le demos clic a la card, que me mande a otra pantalla con todos los datos
+
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+
+            val pantallaDetalle = Intent(context, detalle_canciones::class.java)
+
+            //Mandamos los valores
+
+            pantallaDetalle.putExtra("UUID", item.uuid)
+            pantallaDetalle.putExtra("nombre", item.nombreCancion)
+            pantallaDetalle.putExtra("duracion", item.duracion)
+            pantallaDetalle.putExtra("autor", item.autor)
+
+            context.startActivity(pantallaDetalle)
+
         }
 
 
@@ -169,9 +199,15 @@ class Adaptador(var Datos: List<dataClassMusica>): RecyclerView.Adapter<ViewHold
 
             val commit = objConexion.prepareStatement("commit")
             commit.executeUpdate()
+
+            withContext(Dispatchers.Main) {
+                actualizarListaPostEdicion(uuid, nuevoNombre)
+            }
         }
 
 
     }
+
+
 
 }
